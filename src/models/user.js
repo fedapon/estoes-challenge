@@ -9,10 +9,13 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             User.hasMany(models.Project, {
-                as: "projects",
+                as: "projects_managed",
                 foreignKey: "project_manager_id",
             })
-            User.belongsToMany(models.Project, { through: "UsersProjects" })
+            User.belongsToMany(models.Project, {
+                through: "UsersProjects",
+                as: "projects",
+            })
         }
     }
     User.init(

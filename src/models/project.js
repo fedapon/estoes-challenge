@@ -12,14 +12,16 @@ module.exports = (sequelize, DataTypes) => {
                 as: "projectManager",
                 foreignKey: "project_manager_id",
             })
-            Project.belongsToMany(models.User, { through: "UsersProjects" })
+            Project.belongsToMany(models.User, {
+                through: "UsersProjects",
+                as: "assignedTo",
+            })
         }
     }
     Project.init(
         {
             name: DataTypes.STRING,
             description: DataTypes.STRING,
-            assignedTo: DataTypes.INTEGER,
             status: DataTypes.INTEGER,
         },
         {
