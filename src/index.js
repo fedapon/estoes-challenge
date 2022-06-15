@@ -6,6 +6,13 @@ const app = express()
 dotenv.config()
 const PORT = process.env.PORT | 3000
 
+async function updateDatabase() {
+    const db = require("./models")
+    await db.sequelize.authenticate()
+    await db.sequelize.sync({ force: false })
+}
+updateDatabase()
+
 app.use("/api/projects", projectRoutes)
 
 app.listen(PORT, function () {
