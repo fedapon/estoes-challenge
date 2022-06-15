@@ -1,8 +1,10 @@
 const db = require("../../models")
+const { Op } = require("sequelize")
 
 async function getAllProjects(req, res) {
     try {
-        const projects = await db.Project.findAll({
+        const { page = 1, paginate = 5, search } = req.query
+        const options = {
             attributes: { exclude: ["project_manager_id"] },
             include: [
                 {
@@ -19,10 +21,21 @@ async function getAllProjects(req, res) {
                     },
                 },
             ],
+            page: Number(page),
+            paginate: Number(paginate),
+        }
+        if (search) {
+            options.where = { name: { [Op.like]: `%${search}%` } }
+        }
+        const { docs, pages, total } = await db.Project.paginate(options)
+
+        return res.status(200).json({
+            message: "list of all projects",
+            projects: docs,
+            page: Number(page),
+            pages,
+            total,
         })
-        return res
-            .status(200)
-            .json({ message: "list of all projects", projects })
     } catch (err) {
         return res.status(500).json({
             message: "internal server error",
