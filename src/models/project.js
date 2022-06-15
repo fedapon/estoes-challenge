@@ -23,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             modelName: "Project",
             tableName: "Projects",
+            timestamps: true,
+            // when told to delete a record, it will not truly delete it.
+            // Instead, a special column called deletedAt will have its value
+            // set to the timestamp of that deletion request.
+            paranoid: true,
         }
     )
     return Project

@@ -1,19 +1,29 @@
-export async function getAllProjects(req, res) {
+const db = require("../../models")
+
+async function getAllProjects(req, res) {
     return res.status(200).json({ message: "OK" })
 }
 
-export async function getProject(id) {
+async function getProject(id) {
     return true
 }
 
-export async function createProject() {
+async function createProject() {
     return true
 }
 
-export async function updateProject() {
+async function updateProject() {
     return true
 }
 
-export async function deleteProject() {
+async function deleteProject() {
     return true
+}
+
+module.exports = {
+    getAllProjects,
+    getProject,
+    createProject,
+    updateProject,
+    deleteProject,
 }
