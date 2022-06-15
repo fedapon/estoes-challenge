@@ -13,6 +13,10 @@ async function updateDatabase() {
 }
 updateDatabase()
 
+//middlewares
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+
 app.use("/api/projects", projectRoutes)
 
 app.listen(PORT, function () {
