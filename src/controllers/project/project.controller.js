@@ -95,8 +95,20 @@ async function updateProject(req, res) {
     }
 }
 
-async function deleteProject() {
-    return true
+async function deleteProject(req, res) {
+    try {
+        const { id } = req.params
+        const deletedProject = await db.Project.destroy({ where: { id } })
+        if (deletedProject === 0) {
+            return res.status(404).json({ message: "project not found" })
+        }
+        return res.status(200).json({ message: "project deleted" })
+    } catch (err) {
+        return res.status(500).json({
+            message: "internal server error",
+            error: err.message,
+        })
+    }
 }
 
 module.exports = {
