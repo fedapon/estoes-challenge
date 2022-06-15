@@ -10,19 +10,21 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             User.hasMany(models.Project, {
                 as: "projects",
-                foreignKey: "user_id",
+                foreignKey: "project_manager_id",
             })
+            User.belongsToMany(models.Project, { through: "UsersProjects" })
         }
     }
     User.init(
         {
             firstName: DataTypes.STRING,
             lastName: DataTypes.STRING,
-            email: { type: DataTypes.STRING, unique: true },
+            email: DataTypes.STRING,
         },
         {
             sequelize,
             modelName: "User",
+            tableName: "Users",
             timestamps: true,
             // when told to delete a record, it will not truly delete it.
             // Instead, a special column called deletedAt will have its value
