@@ -3,6 +3,8 @@ const {
     getAllProjects,
     getProject,
     createProject,
+    assingUserToProject,
+    removeUserFromProject,
     updateProject,
     deleteProject,
 } = require("../controllers/project/project.controller")
@@ -14,6 +16,10 @@ router.get("/", getAllProjects)
 router.get("/:id", getProject)
 
 router.post("/", createProject)
+
+router.post("/:id/assing", assingUserToProject)
+
+router.post("/:id/remove", removeUserFromProject)
 
 router.put("/:id", updateProject)
 

@@ -44,27 +44,32 @@ async function getAllProjects(req, res) {
     }
 }
 
+async function getProjectByPk(id) {
+    const project = await db.Project.findByPk(id, {
+        attributes: { exclude: ["project_manager_id"] },
+        include: [
+            {
+                model: db.User,
+                as: "projectManager",
+                attributes: ["id", "firstName", "lastName"],
+            },
+            {
+                model: db.User,
+                as: "assignedTo",
+                attributes: ["id", "firstName", "lastName"],
+                through: {
+                    attributes: [],
+                },
+            },
+        ],
+    })
+    return project
+}
+
 async function getProject(req, res) {
     try {
         const { id } = req.params
-        const project = await db.Project.findByPk(id, {
-            attributes: { exclude: ["project_manager_id"] },
-            include: [
-                {
-                    model: db.User,
-                    as: "projectManager",
-                    attributes: ["id", "firstName", "lastName"],
-                },
-                {
-                    model: db.User,
-                    as: "assignedTo",
-                    attributes: ["id", "firstName", "lastName"],
-                    through: {
-                        attributes: [],
-                    },
-                },
-            ],
-        })
+        const project = await getProjectByPk(id)
         return res.status(200).json({ message: "list one project", project })
     } catch (err) {
         return res.status(500).json({
@@ -80,6 +85,58 @@ async function createProject(req, res) {
         return res
             .status(201)
             .json({ message: "new project created", project: newProject })
+    } catch (err) {
+        return res.status(500).json({
+            message: "internal server error",
+            error: err.message,
+        })
+    }
+}
+
+async function assingUserToProject(req, res) {
+    try {
+        const { id: projectId } = req.params
+        const { id: userId } = req.body
+        const project = await db.Project.findByPk(projectId)
+        const user = await db.User.findByPk(userId)
+        if (!project || !user) {
+            return res
+                .status(404)
+                .json({ message: "project or user not found" })
+        }
+        await project.addAssignedTo(user)
+
+        const projectUpdated = await getProjectByPk(projectId)
+        return res.status(200).json({
+            message: "user assigned to the project",
+            project: projectUpdated,
+        })
+    } catch (err) {
+        return res.status(500).json({
+            message: "internal server error",
+            error: err.message,
+        })
+    }
+}
+
+async function removeUserFromProject(req, res) {
+    try {
+        const { id: projectId } = req.params
+        const { id: userId } = req.body
+        const project = await db.Project.findByPk(projectId)
+        const user = await db.User.findByPk(userId)
+        if (!project || !user) {
+            return res
+                .status(404)
+                .json({ message: "project or user not found" })
+        }
+        await project.removeAssignedTo(user)
+
+        const projectUpdated = await getProjectByPk(projectId)
+        return res.status(200).json({
+            message: "user removed from project",
+            project: projectUpdated,
+        })
     } catch (err) {
         return res.status(500).json({
             message: "internal server error",
@@ -128,6 +185,8 @@ module.exports = {
     getAllProjects,
     getProject,
     createProject,
+    assingUserToProject,
+    removeUserFromProject,
     updateProject,
     deleteProject,
 }
