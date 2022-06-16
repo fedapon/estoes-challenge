@@ -13,10 +13,17 @@ async function updateDatabase() {
 }
 updateDatabase()
 
+//swagger
+const { serve, setup } = require("swagger-ui-express")
+const { configSwagger } = require("./documentation/config.swagger")
+const swaggerJSDocs = require("swagger-jsdoc")(configSwagger)
+
 //middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+//routes
+app.use("/api/docs", serve, setup(swaggerJSDocs))
 app.use("/api/projects", projectRoutes)
 
 app.listen(PORT, function () {
