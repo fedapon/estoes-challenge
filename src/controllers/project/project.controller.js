@@ -70,6 +70,9 @@ async function getProject(req, res) {
     try {
         const { id } = req.params
         const project = await getProjectByPk(id)
+        if (!project) {
+            return res.status(404).json({ message: "project not found" })
+        }
         return res.status(200).json({ message: "list one project", project })
     } catch (err) {
         return res.status(500).json({
@@ -81,7 +84,11 @@ async function getProject(req, res) {
 
 async function createProject(req, res) {
     try {
-        const newProject = await db.Project.create(req.body)
+        let data = { ...req.body }
+        if (!data.status) {
+            data.status = 1
+        }
+        const newProject = await db.Project.create(data)
         return res
             .status(201)
             .json({ message: "new project created", project: newProject })
