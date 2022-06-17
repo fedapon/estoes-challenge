@@ -13,8 +13,8 @@ const configSwagger = {
         },
         servers: [
             {
-                url: "http://localhost:3000",
-                description: "Server Local",
+                url: "http://localhost:3000/api/",
+                description: "Local Server",
             },
         ],
     },
