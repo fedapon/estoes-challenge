@@ -25,7 +25,7 @@ paths:
                       type: integer
             responses:
                 "200":
-                    description: All characters than match the optional filter
+                    description: All projects than match the optional filter
                     content:
                         application/json:
                             schema:

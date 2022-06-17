@@ -1,0 +1,146 @@
+paths:
+    /users:
+        get:
+            tags:
+                - Users
+            summary: Get all users
+            parameters:
+                - in: query
+                  name: search
+                  required: false
+                  description: Filter by last name
+                  schema:
+                      type: string
+                - in: query
+                  name: paginate
+                  required: false
+                  description: Amount of projects per page
+                  schema:
+                      type: integer
+                - in: query
+                  name: page
+                  required: false
+                  description: Page to show
+                  schema:
+                      type: integer
+            responses:
+                "200":
+                    description: All users than match the optional filter
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/UsersPaginated"
+        post:
+            tags:
+                - Users
+            summary: Create a new user
+            requestBody:
+                description: Create a new user
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/CreateUser"
+            responses:
+                "201":
+                    description: New user created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/User"
+
+    /users/{id}:
+        get:
+            tags:
+                - Users
+            summary: Get user by id
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  description: id of the user
+                  schema:
+                      type: integer
+                      example: 1
+            responses:
+                "200":
+                    description: All available data about the user
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/User"
+
+                "404":
+                    description: User not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: user not found
+
+components:
+    schemas:
+        UsersPaginated:
+            type: object
+            properties:
+                message:
+                    type: string
+                    example: list of all users
+                projects:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/User"
+                page:
+                    type: number
+                    example: 1
+                page2:
+                    type: number
+                    example: 5
+                total:
+                    type: number
+                    example: 25
+
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 1
+                firstName:
+                    type: string
+                    example: Fernando
+                lastName:
+                    type: string
+                    example: Pons
+                email:
+                    type: number
+                    example: fedapon@gmail.com
+                createdAt:
+                    type: string
+                    example: 2022-06-15T09:03:09.000Z
+                updatedAt:
+                    type: string
+                    example: 2022-06-15T09:03:09.000Z
+                deletedAt:
+                    type: string
+                    example: null
+
+        CreateUser:
+            type: object
+            required:
+                - firstName
+                - lastName
+                - email
+            properties:
+                firstName:
+                    type: string
+                    example: Fernando
+                lastName:
+                    type: string
+                    example: Pons
+                email:
+                    type: number
+                    example: fedapon@gmail.com
