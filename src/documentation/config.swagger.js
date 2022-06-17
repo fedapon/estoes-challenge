@@ -13,7 +13,13 @@ const configSwagger = {
         },
         servers: [
             {
-                url: "http://localhost:3000/api/",
+                url:
+                    process.env.SWAGGER_SERVER ||
+                    `http://localhost:${process.env.PORT}/api/`,
+                description: "Server",
+            },
+            {
+                url: `http://localhost:${process.env.PORT}/api/`,
                 description: "Local Server",
             },
         ],
